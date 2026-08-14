@@ -227,6 +227,31 @@ export const T = {
       okBtn: "Return to site",
     },
 
+    enquiry: {
+      h: "Send an enquiry",
+      lede: "For a quick question or an indicative quote before formal onboarding begins. The Managing Partner answers personally — there is no call centre or chatbot behind this either.",
+      f: {
+        name: "Full name", nameP: "Enter your full name",
+        company: "Company name", companyP: "Company name, if applicable",
+        country: "Country", countryP: "Enter your country",
+        email: "Email address", emailP: "Business email address",
+        phone: "Phone number", phoneP: "+00 000 000 0000",
+        role: "I am a", roleP: "Select one",
+        product: "Interested in", productP: "Select a product",
+        vol: "Approximate quantity (kg)", volP: "e.g. 25",
+        terms: "Preferred trade term",
+        notes: "Message", notesP: "Purity requirements, timeline, or anything else we should know.",
+      },
+      roles: ["End buyer", "Refinery", "Producer / supplier", "Other"],
+      products: ["Doré (unrefined gold)", "Semi-refined gold", "Refinery placement / offtake", "Other"],
+      termsOpts: ["Not sure yet", "FOB", "CIF"],
+      consent: "I consent to Gold Corridor Logistics & Trading contacting me about this enquiry, and to standard sanctions and PEP screening before any quotation is issued.",
+      submit: "Send enquiry", submitting: "Sending…",
+      okT: "Enquiry received.",
+      okB: "The Managing Partner reviews enquiries personally — expect a reply from a named individual, not an autoresponder.",
+      okBtn: "Send another enquiry",
+    },
+
     contact: {
       eyebrow: "Contact",
       h: "Two desks, two time zones, a named person at each.",
@@ -247,7 +272,9 @@ export const T = {
           addr: ["01 BP 4471, Avenue du Négoce", "Ouagadougou, Kadiogo", "Burkina Faso"],
           hours: "Mon–Fri · 08:00–18:00 GMT" },
       ],
-      note: "For a first approach, written contact is preferred — use the corporate intake form so your compliance file opens with the submission rather than after it.",
+      altH: "Ready for formal onboarding instead?",
+      altB: "Corporate Intake opens your compliance file directly, for counterparties ready to move to verification.",
+      altBtn: "Go to Corporate Intake",
     },
 
     foot: {
@@ -510,6 +537,31 @@ export const T = {
       okBtn: "Retour au site",
     },
 
+    enquiry: {
+      h: "Envoyer une demande",
+      lede: "Pour une question rapide ou une indication de prix avant l'ouverture du dossier d'inscription. L'associé gérant répond personnellement — là non plus, ni centre d'appels ni robot.",
+      f: {
+        name: "Nom complet", nameP: "Saisissez votre nom complet",
+        company: "Nom de la société", companyP: "Nom de la société, le cas échéant",
+        country: "Pays", countryP: "Saisissez votre pays",
+        email: "Adresse e-mail", emailP: "Adresse e-mail professionnelle",
+        phone: "Numéro de téléphone", phoneP: "+00 000 000 0000",
+        role: "Je suis", roleP: "Sélectionnez une option",
+        product: "Intéressé par", productP: "Sélectionnez un produit",
+        vol: "Quantité approximative (kg)", volP: "ex. 25",
+        terms: "Condition de sourcing préférée",
+        notes: "Message", notesP: "Attentes de pureté, calendrier, ou toute autre précision utile.",
+      },
+      roles: ["Acheteur final", "Raffinerie", "Producteur / fournisseur", "Autre"],
+      products: ["Doré (or non raffiné)", "Or semi-affiné", "Placement en raffinerie / offtake", "Autre"],
+      termsOpts: ["Pas encore certain", "FOB", "CIF"],
+      consent: "Je consens à ce que Gold Corridor Logistics & Trading me contacte au sujet de cette demande, et au criblage sanctions et PPE standard avant toute cotation.",
+      submit: "Envoyer la demande", submitting: "Envoi…",
+      okT: "Demande reçue.",
+      okB: "L'associé gérant examine chaque demande personnellement — vous recevrez la réponse d'une personne nommée, pas d'un répondeur automatique.",
+      okBtn: "Envoyer une autre demande",
+    },
+
     contact: {
       eyebrow: "Contact",
       h: "Deux bureaux, deux fuseaux, une personne nommée de chaque côté.",
@@ -528,7 +580,9 @@ export const T = {
           addr: ["01 BP 4471, Avenue du Négoce", "Ouagadougou, Kadiogo", "Burkina Faso"],
           hours: "Lun–Ven · 08h00–18h00 GMT" },
       ],
-      note: "Pour un premier contact, l'écrit est préférable — utilisez le formulaire d'inscription afin que votre dossier de conformité s'ouvre avec la soumission plutôt qu'après.",
+      altH: "Prêt pour une inscription formelle ?",
+      altB: "Le formulaire d'inscription ouvre directement votre dossier de conformité, pour les contreparties prêtes à passer à la vérification.",
+      altBtn: "Accéder à l'inscription",
     },
 
     foot: {
@@ -1444,7 +1498,7 @@ function IntakeForm({ innerRef, onSuccess }) {
     setBusy(true);
     setTimeout(() => {
       setBusy(false);
-      onSuccess(`AGL-INT-2608-${Math.floor(1000 + Math.random() * 8999)}`);
+      onSuccess(`GCL-INT-2608-${Math.floor(1000 + Math.random() * 8999)}`);
       setForm({}); setFiles([]); setConsent(false);
     }, 1150);
   };
@@ -1614,7 +1668,93 @@ function IntakeForm({ innerRef, onSuccess }) {
   );
 }
 
-function Contact({ innerRef }) {
+/* Lightweight first-touch form — no documents, no step numbers. Anyone who
+   lands on Contact and wants to ask a question or get an indicative quote
+   uses this; a counterparty ready to move to verification is routed to the
+   heavier Corporate Intake via the callout below it. */
+function EnquiryForm() {
+  const L = useT().enquiry;
+  const [form, setForm] = useState({});
+  const [consent, setConsent] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [sent, setSent] = useState(false);
+
+  const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
+
+  const submit = (e) => {
+    e.preventDefault();
+    if (!e.currentTarget.checkValidity() || !consent) { e.currentTarget.reportValidity(); return; }
+    setBusy(true);
+    setTimeout(() => { setBusy(false); setSent(true); }, 950);
+  };
+
+  const reset = () => { setForm({}); setConsent(false); setSent(false); };
+
+  if (sent) {
+    return (
+      <div className="flex flex-col items-center gap-4 border border-[#D4AF37]/35 bg-[#D4AF37]/5 px-8 py-12 text-center">
+        <div className="grid h-14 w-14 place-items-center rounded-full text-[#0B1120]" style={{ background: GOLD_GRAD }}>
+          <Check size={26} strokeWidth={2.4} />
+        </div>
+        <h3 className="text-[20px] font-bold text-slate-900">{L.okT}</h3>
+        <p className="max-w-[46ch] text-[14px] leading-relaxed text-slate-600">{L.okB}</p>
+        <Button variant="outline" className="mt-2" onClick={reset}>{L.okBtn}</Button>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={submit} noValidate className="border border-slate-200 bg-white p-8">
+      <h3 className="text-[19px] font-bold text-slate-900">{L.h}</h3>
+      <p className="mt-2 max-w-[62ch] text-[14px] leading-relaxed text-slate-600">{L.lede}</p>
+
+      <div className="mt-6 grid gap-[18px] sm:grid-cols-2">
+        <Field id="eqName" label={L.f.name}><input id="eqName" required className={inputCls} placeholder={L.f.nameP} value={form.name || ""} onChange={set("name")} /></Field>
+        <Field id="eqCompany" label={L.f.company} required={false}><input id="eqCompany" className={inputCls} placeholder={L.f.companyP} value={form.company || ""} onChange={set("company")} /></Field>
+        <Field id="eqCountry" label={L.f.country}><input id="eqCountry" required className={inputCls} placeholder={L.f.countryP} value={form.country || ""} onChange={set("country")} /></Field>
+        <Field id="eqEmail" label={L.f.email}><input id="eqEmail" type="email" required className={inputCls} placeholder={L.f.emailP} value={form.email || ""} onChange={set("email")} /></Field>
+        <Field id="eqPhone" label={L.f.phone}><input id="eqPhone" type="tel" required className={inputCls} placeholder={L.f.phoneP} value={form.phone || ""} onChange={set("phone")} /></Field>
+        <Field id="eqRole" label={L.f.role}>
+          <select id="eqRole" required className={inputCls} value={form.role || ""} onChange={set("role")}>
+            <option value="" disabled>{L.f.roleP}</option>
+            {L.roles.map((r) => <option key={r}>{r}</option>)}
+          </select>
+        </Field>
+        <Field id="eqProduct" label={L.f.product}>
+          <select id="eqProduct" required className={inputCls} value={form.product || ""} onChange={set("product")}>
+            <option value="" disabled>{L.f.productP}</option>
+            {L.products.map((p) => <option key={p}>{p}</option>)}
+          </select>
+        </Field>
+        <Field id="eqVol" label={L.f.vol} required={false}><input id="eqVol" type="number" min="1" className={inputCls} placeholder={L.f.volP} value={form.vol || ""} onChange={set("vol")} /></Field>
+        <Field id="eqTerms" label={L.f.terms} required={false}>
+          <select id="eqTerms" className={inputCls} value={form.terms || ""} onChange={set("terms")}>
+            {L.termsOpts.map((t) => <option key={t}>{t}</option>)}
+          </select>
+        </Field>
+        <div className="sm:col-span-2">
+          <Field id="eqNotes" label={L.f.notes} required={false}>
+            <textarea id="eqNotes" rows={3} className={`${inputCls} resize-y leading-relaxed`} placeholder={L.f.notesP} value={form.notes || ""} onChange={set("notes")} />
+          </Field>
+        </div>
+      </div>
+
+      <div className="mt-5 flex items-start gap-3 border border-slate-200 bg-slate-50 p-4">
+        <input id="eqConsent" type="checkbox" required checked={consent} onChange={(e) => setConsent(e.target.checked)}
+          className="mt-0.5 h-4 w-4 shrink-0 accent-[#D4AF37]" />
+        <label htmlFor="eqConsent" className="text-[12.6px] leading-relaxed text-slate-600">{L.consent}</label>
+      </div>
+
+      <div className="mt-6 flex justify-end">
+        <Button type="submit" disabled={busy} icon={busy ? RefreshCw : ArrowRight}>
+          {busy ? L.submitting : L.submit}
+        </Button>
+      </div>
+    </form>
+  );
+}
+
+function Contact({ innerRef, onIntake }) {
   const L = useT().contact;
   const initials = (n) => n.split(/\s+/).map((w) => w[0]).join("").slice(0, 2).toUpperCase();
 
@@ -1666,8 +1806,16 @@ function Contact({ innerRef }) {
           ))}
         </div>
 
-        <div className="mt-6 flex gap-3 rounded-sm border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-4 py-4 text-[12.7px] leading-relaxed text-slate-600">
-          <Info size={16} className="mt-0.5 shrink-0 text-[#B8952E]" /><span>{L.note}</span>
+        <div className="mt-10">
+          <EnquiryForm />
+        </div>
+
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border border-slate-200 bg-slate-50 px-5 py-4">
+          <div>
+            <div className="text-[13.5px] font-bold text-slate-900">{L.altH}</div>
+            <div className="mt-1 text-[12.6px] leading-relaxed text-slate-600">{L.altB}</div>
+          </div>
+          <Button variant="outline" onClick={onIntake}>{L.altBtn}</Button>
         </div>
       </div>
     </section>
@@ -2220,7 +2368,7 @@ export default function GoldCorridorPlatform() {
       case "comply": return <Compliance />;
       case "services": return <Services />;
       case "founder": return <Founders />;
-      case "contact": return <Contact />;
+      case "contact": return <Contact onIntake={() => goTo("intake")} />;
       case "intake": return <IntakeForm onSuccess={setReference} />;
       default:
         return (
