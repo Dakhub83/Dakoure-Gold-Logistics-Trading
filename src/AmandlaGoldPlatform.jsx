@@ -26,7 +26,7 @@ import {
   Globe, LayoutDashboard, Gem, ShieldCheck, Scale, KeyRound, Lock, Check,
   CheckCircle2, Circle, CircleDot, ArrowRight, UploadCloud, FileText, X,
   Download, Eye, TrendingUp, TrendingDown, FolderLock, LineChart, Truck,
-  Plane, MapPin, Building2, Quote, Clock, Info, FlaskConical, Factory,
+  Plane, MapPin, Quote, Clock, Info, FlaskConical, Factory,
   LogOut, Bell, RefreshCw, Users, Phone,
 } from "lucide-react";
 
@@ -62,7 +62,7 @@ const OZ_PER_KG = 32.1507466;
 export const T = {
   en: {
     code: "EN", locale: "en-GB",
-    rail: { desk: "Ouagadougou +226 · New York +1", hours: "Mon–Fri · GMT and ET coverage", lang: "Language", secure: "Encrypted session" },
+    rail: { hours: "Mon–Fri · GMT and ET coverage", lang: "Language", secure: "Encrypted session" },
     brand: { sub: "Gold Logistics & Trading" },
     phase: { a: "Public Site & Intake", b: "Client Portal", atag: "Phase I", btag: "Phase II" },
     menu: { home: "Home", comply: "Compliance", services: "Services", founder: "Founder", contact: "Contact", cta: "Corporate Intake" },
@@ -345,7 +345,7 @@ export const T = {
 
   fr: {
     code: "FR", locale: "fr-FR",
-    rail: { desk: "Ouagadougou +226 · New York +1", hours: "Lun–Ven · couverture GMT et ET", lang: "Langue", secure: "Session chiffrée" },
+    rail: { hours: "Lun–Ven · couverture GMT et ET", lang: "Langue", secure: "Session chiffrée" },
     brand: { sub: "Logistique & Négoce d'Or" },
     phase: { a: "Site public & inscription", b: "Portail client", atag: "Phase I", btag: "Phase II" },
     menu: { home: "Accueil", comply: "Conformité", services: "Services", founder: "Fondateur", contact: "Contact", cta: "Inscription" },
@@ -897,7 +897,6 @@ function UtilityRail({ lang, setLang }) {
     <div className="border-b border-white/5 bg-[#0B1120]">
       <div className="mx-auto flex h-[38px] w-full max-w-[1240px] items-center justify-between gap-5 px-7">
         <div className="hidden items-center gap-5 text-[11.5px] text-slate-400 md:flex">
-          <span className="flex items-center gap-2"><Building2 size={13} className="text-[#D4AF37]/80" />{L.rail.desk}</span>
           <span className="flex items-center gap-2"><Clock size={13} className="text-[#D4AF37]/80" />{L.rail.hours}</span>
           <span className="flex items-center gap-2"><Lock size={13} className="text-[#D4AF37]/80" />{L.rail.secure}</span>
         </div>
