@@ -1,5 +1,5 @@
 ﻿/**
- * Amandla Gold Logistics & Trading — Platform Prototype
+ * Gold Corridor Logistics & Trading — Platform Prototype
  * ─────────────────────────────────────────────────────
  * Phase I  : Informational front-end + secure B2B lead-generation intake
  * Phase II : Authenticated client portal (dashboard, vault, spot, tracker)
@@ -79,7 +79,7 @@ export const T = {
     hero: {
       eyebrow: "Licensed Burkinabè origination → North American and European refineries",
       t1: "Secured gold corridors, from the ", t2: "pit head", t3: " to the refinery gate.",
-      lede: "Amandla Gold Logistics & Trading originates doré and semi-refined gold from licensed producers in Burkina Faso and delivers it — fully insured, escrow-settled and chain-of-custody documented — to LBMA accredited refineries. Sourcing operates from Ouagadougou; counterparties are handled from New York.",
+      lede: "Gold Corridor Logistics & Trading originates doré and semi-refined gold from licensed producers in Burkina Faso and delivers it — fully insured, escrow-settled and chain-of-custody documented — to LBMA accredited refineries. Sourcing operates from Ouagadougou; counterparties are handled from New York.",
       cta: "Initiate Corporate Intake", cta2: "Review Mandate Terms",
       note: "Counterparty onboarding is restricted to verified corporate entities. No retail, no cash settlement, no unallocated offers.",
     },
@@ -159,7 +159,7 @@ export const T = {
     founders: {
       eyebrow: "Meet the founder",
       h: "One name on the door, accountable for the whole corridor.",
-      lede: "Amandla is not a syndicate of intermediaries passing a consignment between them. It was founded and is run by one person covering both ends of the corridor — origination and producer relationships on the ground in Burkina Faso, and structuring, compliance and buyer relationships out of New York. When you contract with Amandla, you are contracting with the person who signs.",
+      lede: "Gold Corridor is not a syndicate of intermediaries passing a consignment between them. It was founded and is run by one person covering both ends of the corridor — origination and producer relationships on the ground in Burkina Faso, and structuring, compliance and buyer relationships out of New York. When you contract with Gold Corridor, you are contracting with the person who signs.",
       badge: "Sole signatory",
       one: {
         role: "Founder & Managing Partner",
@@ -172,8 +172,8 @@ export const T = {
         ],
       },
       msgTitle: "A message from the Managing Partner",
-      quote: "I built Amandla because I watched too many legitimate Burkinabè producers get shut out of formal markets — and too many serious buyers get burned by intermediaries who could not produce a single verifiable document. I do the unglamorous part myself: licensing, assay, customs, escrow, insurance. If a consignment cannot be documented end to end, I do not move it. That rule has cost me business. It has never cost me a client.",
-      sigLabel: "Founder & Managing Partner", sigCo: "Amandla Gold Logistics & Trading",
+      quote: "I built Gold Corridor because I watched too many legitimate Burkinabè producers get shut out of formal markets — and too many serious buyers get burned by intermediaries who could not produce a single verifiable document. I do the unglamorous part myself: licensing, assay, customs, escrow, insurance. If a consignment cannot be documented end to end, I do not move it. That rule has cost me business. It has never cost me a client.",
+      sigLabel: "Founder & Managing Partner", sigCo: "Gold Corridor Logistics & Trading",
     },
 
     intake: {
@@ -251,11 +251,11 @@ export const T = {
     },
 
     foot: {
-      blurb: "Amandla Gold Logistics & Trading originates, documents and delivers responsibly-sourced Burkinabè gold to accredited refineries in North America and Europe.",
-      c1: "Company", c1i: ["About Amandla", "The Managing Partner", "Operating corridors", "Careers"],
+      blurb: "Gold Corridor Logistics & Trading originates, documents and delivers responsibly-sourced Burkinabè gold to accredited refineries in North America and Europe.",
+      c1: "Company", c1i: ["About Gold Corridor", "The Managing Partner", "Operating corridors", "Careers"],
       c2: "Compliance", c2i: ["AML / KYC policy", "LBMA Responsible Gold", "OECD due diligence", "Sanctions screening"],
-      c3: "Contact", c3i: ["New York — +1 (212) 555-0147", "Ouagadougou — +226 25 55 01 47", "desk@amandla.example"],
-      legal: "© 2026 Amandla Gold Logistics & Trading. All rights reserved.",
+      c3: "Contact", c3i: ["New York — +1 (212) 555-0147", "Ouagadougou — +226 25 55 01 47", "desk@goldcorridor.example"],
+      legal: "© 2026 Gold Corridor Logistics & Trading. All rights reserved.",
       disc: "Interactive prototype. Prices, batches and documents shown are simulated for demonstration.",
     },
 
@@ -309,8 +309,8 @@ export const T = {
         s: "Indicative pricing streamed against the London Fix. Contract pricing is struck at settlement, not at view.",
         fix: "London PM Fix reference", live: "Streaming", unit: "USD / troy ounce",
         units: [{ l: "Per troy ounce" }, { l: "Per kilogram" }, { l: "Per gram" }],
-        disc: "Indicative only. Amandla settles at the LBMA PM Fix on the date of refinery assay confirmation, less agreed refining and logistics deductions.",
-        tblT: "Amandla contract grid", tblS: "Applied to your Tier 1 accreditation",
+        disc: "Indicative only. Gold Corridor settles at the LBMA PM Fix on the date of refinery assay confirmation, less agreed refining and logistics deductions.",
+        tblT: "Gold Corridor contract grid", tblS: "Applied to your Tier 1 accreditation",
         th: ["Grade", "Purity", "Deduction", "Net to you"],
         rows: [
           { g: "Doré bar — primary", p: "92.0–94.5%", d: -3.85 },
@@ -332,7 +332,7 @@ export const T = {
           { t: "Local Collection & Primary Assay", loc: "Processing Hub — Ouagadougou, Burkina Faso", b: "Material received from licensed producers, weighed under camera, XRF-assayed and sealed into numbered tamper-evident containers. Producer licences verified against the ANEEMAS register, with site-level source declaration filed for CAHRA due diligence.", kv: [["Primary assay", "92.6% Au"], ["Gross weight", "14.20 kg"], ["Seal series", "BF-88412-19"]] },
           { t: "Export Clearance & Secure Air Transit", loc: "Ouagadougou International (OUA) — Burkinabè Customs", b: "Export authorisation issued by the mines ministry, customs declaration cleared, consignment handed to accredited secure logistics under armed escort and all-risk cover. Routed via Casablanca for the transatlantic leg — there is no direct service.", kv: [["Export permit", "BF-MEMC-26-4471"], ["Carrier", "Malca-Amit"], ["AWB", "147-88214930"]] },
           { t: "Import Clearance & Armed Transport", loc: "John F. Kennedy International (JFK) — US CBP", b: "US Customs and Border Protection entry filed against the doré tariff line, seal integrity inspected on arrival, then armed vehicle transfer from the airside secure facility directly to the refinery intake bay. Seals broken only under refinery supervision.", kv: [["CBP entry", "CBP-2026-118204"], ["Escort", "New York secure convoy"], ["Seal check", "Intact on arrival"]] },
-          { t: "Refinery Delivery, Smelting & Settlement", loc: "North American refiner — LBMA Good Delivery", b: "Refinery intake weight recorded, material melted and homogenised, final fire-assay determines settlement fineness. Escrow releases to the producer and to Amandla against the assay certificate.", kv: [["Intake weight", "Pending"], ["Final assay", "Pending"], ["Escrow release", "Held"]] },
+          { t: "Refinery Delivery, Smelting & Settlement", loc: "North American refiner — LBMA Good Delivery", b: "Refinery intake weight recorded, material melted and homogenised, final fire-assay determines settlement fineness. Escrow releases to the producer and to Gold Corridor against the assay certificate.", kv: [["Intake weight", "Pending"], ["Final assay", "Pending"], ["Escrow release", "Held"]] },
         ],
         consignments: [
           { id: "AGL-2609-02", meta: "14.20 kg doré · Ouagadougou → New York", stage: 2, cards: ["14.20 kg", "92.6% Au", "$1,182,400", "15 Aug 2026"] },
@@ -362,7 +362,7 @@ export const T = {
     hero: {
       eyebrow: "Sourcing burkinabè agréé → raffineries nord-américaines et européennes",
       t1: "Des corridors aurifères sécurisés, de la ", t2: "mine", t3: " à la porte de la raffinerie.",
-      lede: "Amandla Gold Logistics & Trading source du doré et de l'or semi-affiné auprès de producteurs agréés du Burkina Faso et le livre — intégralement assuré, réglé sous séquestre et documenté de bout en bout — à des raffineries accréditées LBMA. Le sourcing opère depuis Ouagadougou ; les contreparties sont traitées depuis New York.",
+      lede: "Gold Corridor Logistics & Trading source du doré et de l'or semi-affiné auprès de producteurs agréés du Burkina Faso et le livre — intégralement assuré, réglé sous séquestre et documenté de bout en bout — à des raffineries accréditées LBMA. Le sourcing opère depuis Ouagadougou ; les contreparties sont traitées depuis New York.",
       cta: "Initier l'inscription", cta2: "Consulter les conditions",
       note: "L'ouverture de compte est réservée aux entités corporatives vérifiées. Ni particuliers, ni règlement en espèces, ni offres non allouées.",
     },
@@ -442,7 +442,7 @@ export const T = {
     founders: {
       eyebrow: "Rencontrez le fondateur",
       h: "Un seul nom sur la porte, responsable de tout le corridor.",
-      lede: "Amandla n'est pas un assemblage d'intermédiaires se repassant une expédition. La société a été fondée et est dirigée par une seule personne, qui couvre les deux extrémités du corridor — le sourcing et les relations producteurs sur le terrain au Burkina Faso, ainsi que la structuration, la conformité et les relations acheteurs depuis New York. Contracter avec Amandla, c'est contracter avec celui qui signe.",
+      lede: "Gold Corridor n'est pas un assemblage d'intermédiaires se repassant une expédition. La société a été fondée et est dirigée par une seule personne, qui couvre les deux extrémités du corridor — le sourcing et les relations producteurs sur le terrain au Burkina Faso, ainsi que la structuration, la conformité et les relations acheteurs depuis New York. Contracter avec Gold Corridor, c'est contracter avec celui qui signe.",
       badge: "Signataire unique",
       one: {
         role: "Fondateur & associé gérant",
@@ -455,8 +455,8 @@ export const T = {
         ],
       },
       msgTitle: "Message de l'associé gérant",
-      quote: "J'ai créé Amandla après avoir vu trop de producteurs burkinabè légitimes exclus des marchés formels — et trop d'acheteurs sérieux échaudés par des intermédiaires incapables de produire un seul document vérifiable. Je fais moi-même la partie ingrate : licences, essais, douanes, séquestre, assurance. Si une expédition ne peut être documentée de bout en bout, je ne la déplace pas. Cette règle m'a coûté des affaires. Elle ne m'a jamais coûté un client.",
-      sigLabel: "Fondateur & associé gérant", sigCo: "Amandla Gold Logistics & Trading",
+      quote: "J'ai créé Gold Corridor après avoir vu trop de producteurs burkinabè légitimes exclus des marchés formels — et trop d'acheteurs sérieux échaudés par des intermédiaires incapables de produire un seul document vérifiable. Je fais moi-même la partie ingrate : licences, essais, douanes, séquestre, assurance. Si une expédition ne peut être documentée de bout en bout, je ne la déplace pas. Cette règle m'a coûté des affaires. Elle ne m'a jamais coûté un client.",
+      sigLabel: "Fondateur & associé gérant", sigCo: "Gold Corridor Logistics & Trading",
     },
 
     intake: {
@@ -532,11 +532,11 @@ export const T = {
     },
 
     foot: {
-      blurb: "Amandla Gold Logistics & Trading source, documente et livre de l'or burkinabè d'origine responsable aux raffineries accréditées d'Amérique du Nord et d'Europe.",
-      c1: "Société", c1i: ["À propos d'Amandla", "L'associé gérant", "Corridors opérés", "Carrières"],
+      blurb: "Gold Corridor Logistics & Trading source, documente et livre de l'or burkinabè d'origine responsable aux raffineries accréditées d'Amérique du Nord et d'Europe.",
+      c1: "Société", c1i: ["À propos de Gold Corridor", "L'associé gérant", "Corridors opérés", "Carrières"],
       c2: "Conformité", c2i: ["Politique LAB / KYC", "LBMA Responsible Gold", "Diligence raisonnable OCDE", "Criblage des sanctions"],
-      c3: "Contact", c3i: ["New York — +1 (212) 555-0147", "Ouagadougou — +226 25 55 01 47", "desk@amandla.example"],
-      legal: "© 2026 Amandla Gold Logistics & Trading. Tous droits réservés.",
+      c3: "Contact", c3i: ["New York — +1 (212) 555-0147", "Ouagadougou — +226 25 55 01 47", "desk@goldcorridor.example"],
+      legal: "© 2026 Gold Corridor Logistics & Trading. Tous droits réservés.",
       disc: "Prototype interactif. Les cours, lots et documents affichés sont simulés à des fins de démonstration.",
     },
 
@@ -590,8 +590,8 @@ export const T = {
         s: "Cotation indicative diffusée en référence au Fixing de Londres. Le prix contractuel est arrêté au règlement, non à l'affichage.",
         fix: "Référence Fixing PM de Londres", live: "En diffusion", unit: "USD / once troy",
         units: [{ l: "Par once troy" }, { l: "Par kilogramme" }, { l: "Par gramme" }],
-        disc: "Indicatif uniquement. Amandla règle au Fixing PM de la LBMA à la date de confirmation de l'essai de raffinerie, déduction faite des frais d'affinage et de logistique convenus.",
-        tblT: "Grille contractuelle Amandla", tblS: "Appliquée à votre accréditation Rang 1",
+        disc: "Indicatif uniquement. Gold Corridor règle au Fixing PM de la LBMA à la date de confirmation de l'essai de raffinerie, déduction faite des frais d'affinage et de logistique convenus.",
+        tblT: "Grille contractuelle Gold Corridor", tblS: "Appliquée à votre accréditation Rang 1",
         th: ["Qualité", "Pureté", "Décote", "Net pour vous"],
         rows: [
           { g: "Lingot doré — primaire", p: "92,0–94,5 %", d: -3.85 },
@@ -613,7 +613,7 @@ export const T = {
           { t: "Collecte locale & essai primaire", loc: "Hub de traitement — Ouagadougou, Burkina Faso", b: "Matière reçue de producteurs agréés, pesée sous caméra, analysée par XRF et scellée dans des conteneurs numérotés à indication d'effraction. Licences des producteurs vérifiées au registre ANEEMAS, avec déclaration de source au niveau du site pour la diligence CAHRA.", kv: [["Essai primaire", "92,6 % Au"], ["Poids brut", "14,20 kg"], ["Série de scellés", "BF-88412-19"]] },
           { t: "Dédouanement export & fret aérien sécurisé", loc: "Aéroport international de Ouagadougou (OUA) — Douanes burkinabè", b: "Autorisation d'exportation délivrée par le ministère des Mines, déclaration en douane validée, expédition remise à un logisticien sécurisé accrédité sous escorte armée et couverture tous risques. Acheminement via Casablanca pour la traversée transatlantique — il n'existe pas de vol direct.", kv: [["Permis export", "BF-MEMC-26-4471"], ["Transporteur", "Malca-Amit"], ["LTA", "147-88214930"]] },
           { t: "Dédouanement import & transport sous escorte", loc: "Aéroport JFK (New York) — Douanes américaines (CBP)", b: "Déclaration d'entrée auprès du CBP américain sur la ligne tarifaire du doré, inspection de l'intégrité des scellés à l'arrivée, puis transfert en véhicule blindé depuis la zone sécurisée aéroportuaire jusqu'au quai de réception de la raffinerie. Scellés rompus uniquement sous supervision.", kv: [["Déclaration CBP", "CBP-2026-118204"], ["Escorte", "Convoi sécurisé de New York"], ["Contrôle scellés", "Intacts à l'arrivée"]] },
-          { t: "Livraison, fonte & règlement de pureté", loc: "Affineur nord-américain — LBMA Good Delivery", b: "Poids d'entrée en raffinerie enregistré, matière fondue et homogénéisée, l'essai final au feu détermine le titre de règlement. Le séquestre libère les fonds au producteur et à Amandla contre le certificat d'essai.", kv: [["Poids d'entrée", "En attente"], ["Essai final", "En attente"], ["Libération séquestre", "Bloquée"]] },
+          { t: "Livraison, fonte & règlement de pureté", loc: "Affineur nord-américain — LBMA Good Delivery", b: "Poids d'entrée en raffinerie enregistré, matière fondue et homogénéisée, l'essai final au feu détermine le titre de règlement. Le séquestre libère les fonds au producteur et à Gold Corridor contre le certificat d'essai.", kv: [["Poids d'entrée", "En attente"], ["Essai final", "En attente"], ["Libération séquestre", "Bloquée"]] },
         ],
         consignments: [
           { id: "AGL-2609-02", meta: "14,20 kg doré · Ouagadougou → New York", stage: 2, cards: ["14,20 kg", "92,6 % Au", "1 182 400 $", "15 août 2026"] },
@@ -636,7 +636,7 @@ const useT = () => useContext(I18n);
    ══════════════════════════════════════════════════════════════ */
 const GOLD = "#D4AF37";
 
-/* Silver — the second metal. Gold marks Amandla and live/cleared state;
+/* Silver — the second metal. Gold marks Gold Corridor and live/cleared state;
    silver marks the counterparty and the un-gilded (pending) state, so the
    two never collapse into one meaning. */
 const SILVER = {
@@ -1000,10 +1000,10 @@ function Masthead({ view, setView, page, setPage }) {
   return (
     <header className="sticky top-0 z-40 border-b border-[#D4AF37]/15 bg-slate-900">
       <div className="mx-auto flex w-full max-w-[1240px] flex-wrap items-center justify-between gap-7 px-7 py-3">
-        <button onClick={() => setPage("home")} aria-label="Amandla — home" className="flex items-center gap-3.5 text-left">
+        <button onClick={() => setPage("home")} aria-label="Gold Corridor — home" className="flex items-center gap-3.5 text-left">
           <BrandMark id="mast" />
           <div>
-            <div className="text-[19px] font-bold leading-none tracking-[0.16em] text-white">AMANDLA</div>
+            <div className="text-[19px] font-bold leading-none tracking-[0.16em] text-white">GOLD CORRIDOR</div>
             <div className="mt-1.5 font-mono text-[9.5px] uppercase tracking-[0.19em] text-[#D4AF37]">{L.brand.sub}</div>
           </div>
         </button>
@@ -1014,7 +1014,7 @@ function Masthead({ view, setView, page, setPage }) {
               role="tab"
               aria-selected={view === k}
               onClick={() => { setView(k); window.scrollTo(0, 0); }}
-              /* Phase I is Amandla's own storefront — gold. Phase II is the
+              /* Phase I is Gold Corridor's own storefront — gold. Phase II is the
                  client's workspace — silver. The switcher carries the split. */
               style={view === k ? { background: k === "b" ? SILVER.grad : GOLD_GRAD } : undefined}
               className={`flex flex-1 items-center justify-center gap-2.5 whitespace-nowrap rounded-[1px] px-4 py-2.5 text-[12.5px] font-semibold transition sm:flex-none ${
@@ -1050,7 +1050,7 @@ function SiteFooter() {
           <div>
             <div className="flex items-center gap-3">
               <BrandMark id="foot" className="h-[34px] w-[34px]" />
-              <div className="text-[16px] font-bold tracking-[0.16em] text-white">AMANDLA</div>
+              <div className="text-[16px] font-bold tracking-[0.16em] text-white">GOLD CORRIDOR</div>
             </div>
             <p className="mt-4 max-w-[38ch] text-[13px] leading-relaxed">{L.blurb}</p>
           </div>
@@ -2149,7 +2149,7 @@ function Portal({ locale }) {
   return (
     <div className="grid min-h-[calc(100vh-114px)] bg-slate-100 lg:grid-cols-[264px_1fr]">
       <aside className="flex flex-wrap items-center gap-4 border-r border-[#D4AF37]/15 bg-slate-900 px-5 py-4 lg:flex-col lg:items-stretch lg:gap-6 lg:px-[18px] lg:py-6">
-        {/* the signed-in counterparty is silver; Amandla's own mark stays
+        {/* the signed-in counterparty is silver; Gold Corridor's own mark stays
             gold, so the two identities never read as the same entity */}
         <div className="flex items-center gap-3.5 border border-[#C9CDD4]/15 bg-white/[0.045] p-4">
           <div
@@ -2199,7 +2199,7 @@ function Portal({ locale }) {
 /* ══════════════════════════════════════════════════════════════
    8 · ROOT
    ══════════════════════════════════════════════════════════════ */
-export default function AmandlaGoldPlatform() {
+export default function GoldCorridorPlatform() {
   const [lang, setLang] = useState("en");
   const [view, setView] = useState("a");
   const [page, setPage] = useState("home");

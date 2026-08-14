@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "Amandla Gold Logistics & Trading — bilingual platform front-end. Ouagadougou sourcing to New York buyers.",
+  "description": "Gold Corridor Logistics & Trading — bilingual platform front-end. Ouagadougou sourcing to New York buyers.",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

@@ -27,7 +27,7 @@ Two things bite on a fresh clone:
 
 ## Architecture
 
-The entire platform is one file — `src/AmandlaGoldPlatform.jsx`, ~2250 lines.
+The entire platform is one file — `src/GoldCorridorPlatform.jsx`, ~2250 lines.
 `main.jsx` → `App.jsx` → that component. Everything below is internal to it.
 
 Two phases share the component, switched by `view` in the masthead:

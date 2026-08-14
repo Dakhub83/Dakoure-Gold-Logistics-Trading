@@ -1,5 +1,5 @@
-import AmandlaGoldPlatform from "./AmandlaGoldPlatform.jsx";
+import GoldCorridorPlatform from "./GoldCorridorPlatform.jsx";
 
 export default function App() {
-  return <AmandlaGoldPlatform />;
+  return <GoldCorridorPlatform />;
 }

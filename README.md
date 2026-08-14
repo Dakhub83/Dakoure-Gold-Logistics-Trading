@@ -1,4 +1,4 @@
-# Amandla Gold Logistics & Trading — Platform Prototype
+# Gold Corridor Logistics & Trading — Platform Prototype
 
 Bilingual (EN/FR) front-end for a gold trading platform connecting Burkinabè
 producers to international refineries. Sourcing operates from Ouagadougou;
@@ -35,7 +35,7 @@ postcss.config.js       tailwind + autoprefixer
 src/main.jsx            React root
 src/App.jsx             renders the platform
 src/index.css           Tailwind directives + the `pagein` keyframes
-src/AmandlaGoldPlatform.jsx   the entire platform (~1900 lines)
+src/GoldCorridorPlatform.jsx   the entire platform (~1900 lines)
 ```
 
 The gold `#D4AF37` and silver `#C9CDD4` accents are Tailwind arbitrary values
@@ -50,7 +50,7 @@ machine it was scaffolded on. To initialise and publish:
 ```bash
 git init
 git add .
-git commit -m "Initial commit: Amandla Gold platform front-end"
+git commit -m "Initial commit: Gold Corridor platform front-end"
 git branch -M main
 git remote add origin <YOUR-REPO-URL>
 git push -u origin main
@@ -203,8 +203,8 @@ business. Confirm each before this page is public:
 
 ## The founder
 
-Amandla is a **sole-principal** firm. The founder is defined once at the top of
-`AmandlaGoldPlatform.jsx`:
+Gold Corridor is a **sole-principal** firm. The founder is defined once at the top of
+`GoldCorridorPlatform.jsx`:
 
 ```js
 export const FOUNDER = { name: "Arnaud Dakoure", initials: "AD", isPlaceholder: false };
@@ -224,7 +224,7 @@ Adding a second principal later means reverting to a two-up grid, not dropping
 another card next to this one.
 
 Every reference to leadership is singular and first-person in the quote ("I
-built Amandla…", "I do the unglamorous part myself"). If the firm takes on a
+built Gold Corridor…", "I do the unglamorous part myself"). If the firm takes on a
 partner, the strings to revisit are: `founders.*`, `intake.lede`,
 `intake.slaV`, `intake.okB`, `intake.okSteps[1]`, and `foot.c1i[1]` — in both
 languages.
@@ -268,11 +268,11 @@ Semantic status colour is deliberately kept **separate** from the metals so
 
 Silver is not decoration — it carries meaning, and the two metals never overlap:
 
-- **Gold is Amandla, and it is the cleared state.** The ingot mark, the primary
+- **Gold is Gold Corridor, and it is the cleared state.** The ingot mark, the primary
   button, the Phase I tab, a completed milestone, the rail *behind* a shipment,
   metal at rest in the corridor panel.
 - **Silver is the counterparty, and it is the un-gilded state.** The secondary
-  button, the Phase II tab, the signed-in client's avatar (against Amandla's
+  button, the Phase II tab, the signed-in client's avatar (against Gold Corridor's
   gold mark, so the two entities never read as one), a pending milestone, the
   rail *ahead* of a shipment, metal *in transit*, and the supporting
   infrastructure chrome — compliance tiles, form step numbers, the upload

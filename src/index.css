@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Page-enter animation used by the router wrapper in AmandlaGoldPlatform.
+/* Page-enter animation used by the router wrapper in GoldCorridorPlatform.
    The component references it as animate-[pagein_.32s_ease], so it must be
    declared here — Tailwind cannot generate keyframes it does not know about. */
 @keyframes pagein {
