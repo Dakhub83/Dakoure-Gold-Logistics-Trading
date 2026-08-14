@@ -254,8 +254,6 @@ export const T = {
 
     contact: {
       eyebrow: "Contact",
-      h: "Two desks, two time zones, a named person at each.",
-      lede: "No switchboard and no intermediary. Either number reaches a named person directly.",
       callLabel: "Call",
       /* PLACEHOLDER CONTACT DETAILS — not real.
          Numbers use the 555-01xx range reserved for fictional use; the street
@@ -564,8 +562,6 @@ export const T = {
 
     contact: {
       eyebrow: "Contact",
-      h: "Deux bureaux, deux fuseaux, une personne nommée de chaque côté.",
-      lede: "Ni standard téléphonique ni intermédiaire. Chaque numéro joint directement une personne nommée.",
       callLabel: "Appeler",
       /* COORDONNÉES FICTIVES — à remplacer avant la mise en ligne. */
       offices: [
@@ -1761,10 +1757,8 @@ function Contact({ innerRef, onIntake }) {
   return (
     <section ref={innerRef} id="contact" className="scroll-mt-[140px] border-y border-slate-200 bg-white py-20">
       <div className="mx-auto w-full max-w-[1240px] px-7">
-        <header className="mb-11 max-w-[70ch]">
+        <header className="mb-7">
           <Eyebrow>{L.eyebrow}</Eyebrow>
-          <h2 className="mt-3.5 text-balance text-[clamp(25px,3vw,35px)] font-bold tracking-tight text-slate-900">{L.h}</h2>
-          <p className="mt-4 text-[16.5px] leading-[1.72] text-slate-600">{L.lede}</p>
         </header>
 
         <div className="grid gap-6 lg:grid-cols-2">
