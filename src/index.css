@@ -16,6 +16,19 @@
   }
 }
 
+/* Slide-in for DocumentDrawer (Client Portal -> My Documents).
+   animate-[drawerin_.28s_ease] needs this declared, same reason as pagein above. */
+@keyframes drawerin {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 /* The brand commits to one visual world: navy ground, stark white
    workspaces, gold and silver accents. Painted explicitly so the page
    never borrows a host background. */

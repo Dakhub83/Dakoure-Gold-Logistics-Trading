@@ -29,6 +29,8 @@ import {
   Plane, MapPin, Quote, Clock, Info, FlaskConical, Factory,
   LogOut, Bell, RefreshCw, Users, Phone,
 } from "lucide-react";
+import AssayMatchWidget from "./portal-widgets/AssayMatchWidget.jsx";
+import DocumentDrawer from "./portal-widgets/DocumentDrawer.jsx";
 
 /* ══════════════════════════════════════════════════════════════
    1 · CONFIGURATION — replace the founder identities here
@@ -320,6 +322,7 @@ export const T = {
           { n: "Letter of Intent — Q3 2026 allocation", m: "PDF · 412 KB", c: "—", d: "12 Aug 2026", s: "ok" },
           { n: "Primary assay certificate (XRF)", m: "PDF · 1.8 MB", c: "AGL-2609-03", d: "11 Aug 2026", s: "ok" },
           { n: "Export permit — ANEEMAS Burkina Faso", m: "PDF · 664 KB", c: "AGL-2609-02", d: "10 Aug 2026", s: "ok" },
+          { n: "Geological & environmental compliance certificate — BUMIGEB", m: "PDF · 512 KB", c: "AGL-2609-02", d: "10 Aug 2026", s: "ok" },
           { n: "Air waybill & security manifest", m: "PDF · 288 KB", c: "AGL-2609-02", d: "10 Aug 2026", s: "ok" },
           { n: "Escrow release instruction", m: "PDF · 196 KB", c: "AGL-2608-01", d: "09 Aug 2026", s: "wait" },
           { n: "Refinery settlement statement", m: "PDF · 524 KB", c: "AGL-2608-01", d: "09 Aug 2026", s: "move" },
@@ -327,6 +330,12 @@ export const T = {
           { n: "Beneficial ownership declaration 2026", m: "PDF · 244 KB", c: "—", d: "04 Aug 2026", s: "wait" },
         ],
         view: "View", dl: "Download",
+        drawer: {
+          title: "Document Preview",
+          previewNote: "Interactive prototype — the rendered file is simulated for demonstration, not a real upload.",
+          regulatory: "Regulatory compliance document",
+          close: "Close",
+        },
       },
 
       px: {
@@ -354,15 +363,19 @@ export const T = {
         st: { done: "Completed", live: "In progress", wait: "Pending" },
         note: "Milestones advance only when the supporting document is filed to your vault. A node cannot be marked complete without its certificate, permit or waybill attached.",
         steps: [
-          { t: "Local Collection & Primary Assay", loc: "Processing Hub — Ouagadougou, Burkina Faso", b: "Material received from licensed producers, weighed under camera, XRF-assayed and sealed into numbered tamper-evident containers. Producer licences verified against the ANEEMAS register, with site-level source declaration filed for CAHRA due diligence.", kv: [["Primary assay", "92.6% Au"], ["Gross weight", "14.20 kg"], ["Seal series", "BF-88412-19"]] },
-          { t: "Export Clearance & Secure Air Transit", loc: "Ouagadougou International (OUA) — Burkinabè Customs", b: "Export authorisation issued by the mines ministry, customs declaration cleared, consignment handed to accredited secure logistics under armed escort and all-risk cover. Routed via Casablanca for the transatlantic leg — there is no direct service.", kv: [["Export permit", "BF-MEMC-26-4471"], ["Carrier", "Malca-Amit"], ["AWB", "147-88214930"]] },
-          { t: "Import Clearance & Armed Transport", loc: "John F. Kennedy International (JFK) — US CBP", b: "US Customs and Border Protection entry filed against the doré tariff line, seal integrity inspected on arrival, then armed vehicle transfer from the airside secure facility directly to the refinery intake bay. Seals broken only under refinery supervision.", kv: [["CBP entry", "CBP-2026-118204"], ["Escort", "New York secure convoy"], ["Seal check", "Intact on arrival"]] },
-          { t: "Refinery Delivery, Smelting & Settlement", loc: "North American refiner — LBMA Good Delivery", b: "Refinery intake weight recorded, material melted and homogenised, final fire-assay determines settlement fineness. Escrow releases to the producer and to Gold Corridor against the assay certificate.", kv: [["Intake weight", "Pending"], ["Final assay", "Pending"], ["Escrow release", "Held"]] },
+          { t: "Mine-Site Lot Creation", loc: "Producer site — Boulkiemdé Province, Burkina Faso", b: "Doré collected at the point of production under third-party camera supervision, GPS-tagged and sealed into a numbered tamper-evident container. Producer's ANEEMAS permit and site coordinates logged against the CAHRA source declaration before the lot leaves site.", kv: [["Field assay", "~91% Au (indicative)"], ["Gross weight", "14.35 kg"], ["Seal ID", "BF-LOT-22014"]] },
+          { t: "Secure Transport to Ouagadougou Hub", loc: "Producer site → Processing Hub, Ouagadougou", b: "Sealed lot moved under licensed armed escort to the Ouagadougou processing hub. Seal number and GPS trace logged continuously; any break in custody voids the chain and halts the consignment.", kv: [["Escort", "Licensed domestic carrier"], ["Transit time", "6–9 h road"], ["Seal check", "Verified on arrival"]] },
+          { t: "Comptoir Intake & Re-Weigh", loc: "Processing Hub — Ouagadougou, Burkina Faso", b: "Lot re-weighed under camera on calibrated scales, seal integrity confirmed, and a preliminary XRF assay run to cross-check the field figure before the government assay is scheduled.", kv: [["Re-weigh", "14.20 kg"], ["Variance vs. field", "-1.0%"], ["Seal series", "BF-88412-19"]] },
+          { t: "ANEEMAS Government Assay & Export Valuation", loc: "ANEEMAS — Ouagadougou, Burkina Faso", b: "Official government assay and export valuation performed by ANEEMAS. The stamped assay certificate is the figure the export permit, insurance and buyer contract are struck against — not the field or hub estimate.", kv: [["Official assay", "92.6% Au"], ["Valuation ref.", "ANM-26-08841"], ["CAHRA filing", "Complete"]] },
+          { t: "Export Customs Declaration", loc: "Ouagadougou International (OUA) — Burkinabè Customs", b: "Export authorisation issued by the mines ministry and customs declaration filed against the ANEEMAS valuation. Final consignee re-screened against sanctions lists before the permit is released.", kv: [["Export permit", "BF-MEMC-26-4471"], ["Customs decl.", "Filed & cleared"], ["Consignee screen", "Clear"]] },
+          { t: "Airfreight Loading & Seal Verification", loc: "Ouagadougou International (OUA)", b: "Consignment handed to accredited secure logistics under armed escort and all-risk cover, seal verified and photographed at hand-off, loaded for the transatlantic leg via Casablanca — there is no direct service.", kv: [["Carrier", "Malca-Amit"], ["AWB", "147-88214930"], ["Seal photo", "On file"]] },
+          { t: "Import Clearance & Arrival", loc: "John F. Kennedy International (JFK) — US CBP", b: "US Customs and Border Protection entry filed against the doré tariff line, seal integrity inspected on arrival, then armed vehicle transfer from the airside secure facility directly to the refinery intake bay. Seals broken only under refinery supervision.", kv: [["CBP entry", "CBP-2026-118204"], ["Escort", "New York secure convoy"], ["Seal check", "Intact on arrival"]] },
+          { t: "Refinery Intake, Referee Assay & Settlement", loc: "North American refiner — LBMA Good Delivery", b: "Refinery intake weight recorded, material melted and homogenised, and an independent referee fire-assay determines final settlement fineness against the ANEEMAS figure. Escrow releases to the producer and to Gold Corridor only once both assays reconcile.", kv: [["Intake weight", "Pending"], ["Referee assay", "Pending"], ["Escrow release", "Held"]] },
         ],
         consignments: [
-          { id: "AGL-2609-02", meta: "14.20 kg doré · Ouagadougou → New York", stage: 2, cards: ["14.20 kg", "92.6% Au", "$1,182,400", "15 Aug 2026"] },
+          { id: "AGL-2609-02", meta: "14.20 kg doré · Ouagadougou → New York", stage: 6, cards: ["14.20 kg", "92.6% Au", "$1,182,400", "15 Aug 2026"] },
           { id: "AGL-2609-03", meta: "8.65 kg doré · Ouagadougou → Zurich", stage: 1, cards: ["8.65 kg", "91.4% Au", "$711,900", "19 Aug 2026"] },
-          { id: "AGL-2608-01", meta: "22.40 kg doré · Ouagadougou → New York", stage: 4, cards: ["22.40 kg", "99.34% settled", "$1,864,200", "Settled 09 Aug"] },
+          { id: "AGL-2608-01", meta: "22.40 kg doré · Ouagadougou → New York", stage: 8, cards: ["22.40 kg", "99.34% settled", "$1,864,200", "Settled 09 Aug"] },
         ],
       },
     },
@@ -626,6 +639,7 @@ export const T = {
           { n: "Lettre d'intention — allocation T3 2026", m: "PDF · 412 Ko", c: "—", d: "12 août 2026", s: "ok" },
           { n: "Certificat d'essai primaire (XRF)", m: "PDF · 1,8 Mo", c: "AGL-2609-03", d: "11 août 2026", s: "ok" },
           { n: "Permis d'exportation — ANEEMAS Burkina", m: "PDF · 664 Ko", c: "AGL-2609-02", d: "10 août 2026", s: "ok" },
+          { n: "Certificat de conformité géologique & environnementale — BUMIGEB", m: "PDF · 512 Ko", c: "AGL-2609-02", d: "10 août 2026", s: "ok" },
           { n: "Lettre de transport aérien & manifeste", m: "PDF · 288 Ko", c: "AGL-2609-02", d: "10 août 2026", s: "ok" },
           { n: "Instruction de libération du séquestre", m: "PDF · 196 Ko", c: "AGL-2608-01", d: "09 août 2026", s: "wait" },
           { n: "Relevé de règlement de raffinerie", m: "PDF · 524 Ko", c: "AGL-2608-01", d: "09 août 2026", s: "move" },
@@ -633,6 +647,12 @@ export const T = {
           { n: "Déclaration des bénéficiaires 2026", m: "PDF · 244 Ko", c: "—", d: "04 août 2026", s: "wait" },
         ],
         view: "Consulter", dl: "Télécharger",
+        drawer: {
+          title: "Aperçu du document",
+          previewNote: "Prototype interactif — le fichier affiché est simulé à des fins de démonstration, non un import réel.",
+          regulatory: "Document de conformité réglementaire",
+          close: "Fermer",
+        },
       },
 
       px: {
@@ -660,15 +680,19 @@ export const T = {
         st: { done: "Terminé", live: "En cours", wait: "En attente" },
         note: "Un jalon n'avance que lorsque la pièce justificative est déposée dans votre coffre. Aucun nœud ne peut être marqué terminé sans son certificat, permis ou lettre de transport joint.",
         steps: [
-          { t: "Collecte locale & essai primaire", loc: "Hub de traitement — Ouagadougou, Burkina Faso", b: "Matière reçue de producteurs agréés, pesée sous caméra, analysée par XRF et scellée dans des conteneurs numérotés à indication d'effraction. Licences des producteurs vérifiées au registre ANEEMAS, avec déclaration de source au niveau du site pour la diligence CAHRA.", kv: [["Essai primaire", "92,6 % Au"], ["Poids brut", "14,20 kg"], ["Série de scellés", "BF-88412-19"]] },
-          { t: "Dédouanement export & fret aérien sécurisé", loc: "Aéroport international de Ouagadougou (OUA) — Douanes burkinabè", b: "Autorisation d'exportation délivrée par le ministère des Mines, déclaration en douane validée, expédition remise à un logisticien sécurisé accrédité sous escorte armée et couverture tous risques. Acheminement via Casablanca pour la traversée transatlantique — il n'existe pas de vol direct.", kv: [["Permis export", "BF-MEMC-26-4471"], ["Transporteur", "Malca-Amit"], ["LTA", "147-88214930"]] },
-          { t: "Dédouanement import & transport sous escorte", loc: "Aéroport JFK (New York) — Douanes américaines (CBP)", b: "Déclaration d'entrée auprès du CBP américain sur la ligne tarifaire du doré, inspection de l'intégrité des scellés à l'arrivée, puis transfert en véhicule blindé depuis la zone sécurisée aéroportuaire jusqu'au quai de réception de la raffinerie. Scellés rompus uniquement sous supervision.", kv: [["Déclaration CBP", "CBP-2026-118204"], ["Escorte", "Convoi sécurisé de New York"], ["Contrôle scellés", "Intacts à l'arrivée"]] },
-          { t: "Livraison, fonte & règlement de pureté", loc: "Affineur nord-américain — LBMA Good Delivery", b: "Poids d'entrée en raffinerie enregistré, matière fondue et homogénéisée, l'essai final au feu détermine le titre de règlement. Le séquestre libère les fonds au producteur et à Gold Corridor contre le certificat d'essai.", kv: [["Poids d'entrée", "En attente"], ["Essai final", "En attente"], ["Libération séquestre", "Bloquée"]] },
+          { t: "Création du lot au site minier", loc: "Site du producteur — Province du Boulkiemdé, Burkina Faso", b: "Doré collecté sur le site de production sous supervision caméra tierce, géolocalisé et scellé dans un conteneur numéroté à indication d'effraction. Le permis ANEEMAS du producteur et les coordonnées du site sont consignés dans la déclaration de source CAHRA avant que le lot ne quitte le site.", kv: [["Essai de terrain", "~91 % Au (indicatif)"], ["Poids brut", "14,35 kg"], ["ID scellé", "BF-LOT-22014"]] },
+          { t: "Transport sécurisé vers le hub de Ouagadougou", loc: "Site du producteur → Hub de traitement, Ouagadougou", b: "Lot scellé acheminé sous escorte armée agréée vers le hub de traitement de Ouagadougou. Numéro de scellé et trace GPS enregistrés en continu ; toute rupture de la chaîne de possession invalide le lot et suspend l'expédition.", kv: [["Escorte", "Transporteur national agréé"], ["Durée du trajet", "6–9 h route"], ["Contrôle scellé", "Vérifié à l'arrivée"]] },
+          { t: "Réception au comptoir & repesée", loc: "Hub de traitement — Ouagadougou, Burkina Faso", b: "Lot repesé sous caméra sur balances étalonnées, intégrité du scellé confirmée, et essai XRF préliminaire réalisé pour recouper le chiffre de terrain avant la planification de l'essai gouvernemental.", kv: [["Repesée", "14,20 kg"], ["Écart vs terrain", "-1,0 %"], ["Série de scellés", "BF-88412-19"]] },
+          { t: "Essai gouvernemental ANEEMAS & valorisation export", loc: "ANEEMAS — Ouagadougou, Burkina Faso", b: "Essai officiel et valorisation à l'export réalisés par l'ANEEMAS. Le certificat d'essai tamponné est le chiffre sur lequel sont établis le permis d'export, l'assurance et le contrat acheteur — pas l'estimation de terrain ou du hub.", kv: [["Essai officiel", "92,6 % Au"], ["Réf. valorisation", "ANM-26-08841"], ["Dépôt CAHRA", "Complet"]] },
+          { t: "Déclaration en douane export", loc: "Aéroport international de Ouagadougou (OUA) — Douanes burkinabè", b: "Autorisation d'exportation délivrée par le ministère des Mines et déclaration en douane déposée sur la base de la valorisation ANEEMAS. Le destinataire final est re-vérifié contre les listes de sanctions avant la délivrance du permis.", kv: [["Permis export", "BF-MEMC-26-4471"], ["Décl. douane", "Déposée et validée"], ["Filtrage destinataire", "Sans réserve"]] },
+          { t: "Chargement aérien & vérification des scellés", loc: "Aéroport international de Ouagadougou (OUA)", b: "Expédition remise à un logisticien sécurisé accrédité sous escorte armée et couverture tous risques, scellé vérifié et photographié à la remise, chargée pour la traversée transatlantique via Casablanca — il n'existe pas de vol direct.", kv: [["Transporteur", "Malca-Amit"], ["LTA", "147-88214930"], ["Photo du scellé", "Au dossier"]] },
+          { t: "Dédouanement import & arrivée", loc: "Aéroport JFK (New York) — Douanes américaines (CBP)", b: "Déclaration d'entrée auprès du CBP américain sur la ligne tarifaire du doré, inspection de l'intégrité des scellés à l'arrivée, puis transfert en véhicule blindé depuis la zone sécurisée aéroportuaire jusqu'au quai de réception de la raffinerie.", kv: [["Déclaration CBP", "CBP-2026-118204"], ["Escorte", "Convoi sécurisé de New York"], ["Contrôle scellés", "Intacts à l'arrivée"]] },
+          { t: "Réception raffinerie, essai contradictoire & règlement", loc: "Affineur nord-américain — LBMA Good Delivery", b: "Poids d'entrée en raffinerie enregistré, matière fondue et homogénéisée, un essai au feu contradictoire indépendant détermine le titre de règlement final au regard du chiffre ANEEMAS. Le séquestre ne libère les fonds au producteur et à Gold Corridor qu'une fois les deux essais réconciliés.", kv: [["Poids d'entrée", "En attente"], ["Essai contradictoire", "En attente"], ["Libération séquestre", "Bloquée"]] },
         ],
         consignments: [
-          { id: "AGL-2609-02", meta: "14,20 kg doré · Ouagadougou → New York", stage: 2, cards: ["14,20 kg", "92,6 % Au", "1 182 400 $", "15 août 2026"] },
+          { id: "AGL-2609-02", meta: "14,20 kg doré · Ouagadougou → New York", stage: 6, cards: ["14,20 kg", "92,6 % Au", "1 182 400 $", "15 août 2026"] },
           { id: "AGL-2609-03", meta: "8,65 kg doré · Ouagadougou → Zurich", stage: 1, cards: ["8,65 kg", "91,4 % Au", "711 900 $", "19 août 2026"] },
-          { id: "AGL-2608-01", meta: "22,40 kg doré · Ouagadougou → New York", stage: 4, cards: ["22,40 kg", "99,34 % réglé", "1 864 200 $", "Réglé le 9 août"] },
+          { id: "AGL-2608-01", meta: "22,40 kg doré · Ouagadougou → New York", stage: 8, cards: ["22,40 kg", "99,34 % réglé", "1 864 200 $", "Réglé le 9 août"] },
         ],
       },
     },
@@ -2098,12 +2122,17 @@ function Overview({ spot, locale, goShip }) {
           ))}
         </Panel>
       </div>
+
+      <div className="mt-5">
+        <AssayMatchWidget />
+      </div>
     </>
   );
 }
 
 function Documents() {
   const L = useT().portal.docs;
+  const [openDoc, setOpenDoc] = useState(null);
   const icons = [FolderLock, KeyRound, ShieldCheck];
   const pillFor = (s) =>
     s === "ok" ? <Pill tone="ok" icon={CheckCircle2}>{L.st.ok}</Pill>
@@ -2163,7 +2192,7 @@ function Documents() {
                 <td className="px-4 py-3.5">{pillFor(r.s)}</td>
                 <td className="px-4 py-3.5">
                   <div className="flex justify-end gap-2">
-                    <button title={L.view} className="grid h-[30px] w-[30px] place-items-center rounded-sm border border-slate-200 bg-white p-1.5 text-slate-500 hover:border-[#D4AF37] hover:text-[#B8952E]"><Eye size={14} /></button>
+                    <button onClick={() => setOpenDoc(r)} title={L.view} className="grid h-[30px] w-[30px] place-items-center rounded-sm border border-slate-200 bg-white p-1.5 text-slate-500 hover:border-[#D4AF37] hover:text-[#B8952E]"><Eye size={14} /></button>
                     <button title={L.dl} className="grid h-[30px] w-[30px] place-items-center rounded-sm border border-slate-200 bg-white p-1.5 text-slate-500 hover:border-[#D4AF37] hover:text-[#B8952E]"><Download size={14} /></button>
                   </div>
                 </td>
@@ -2172,6 +2201,8 @@ function Documents() {
           </tbody>
         </table>
       </div>
+
+      {openDoc && <DocumentDrawer doc={openDoc} labels={L} onClose={() => setOpenDoc(null)} />}
     </>
   );
 }

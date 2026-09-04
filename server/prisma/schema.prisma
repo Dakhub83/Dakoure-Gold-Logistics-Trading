@@ -1,0 +1,418 @@
+// Chain-of-Custody & Trade Matching Engine — schema
+// Mirrors the "Custody & Matching Engine" spec §1. One lot record is read
+// and written by three subsystems: custody (physical), trade (contract),
+// escrow (settlement authorization).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ───────────────────────── enums ─────────────────────────
+
+enum LotStatus {
+  lot_created
+  in_transport
+  comptoir_intake
+  government_assayed
+  export_declared
+  airfreight_loaded
+  import_cleared
+  verifying_assay // set by the logistics-update webhook on REFINERY_INTAKE
+  settled
+  disputed
+}
+
+// Coarse custodial lock on the lot as physical collateral — separate from
+// LotStatus (which tracks physical custody phase) and from
+// TradeContract.state (which tracks the bank escrow authorization
+// workflow, spec "Custody & Matching Engine" §3). This is the simpler
+// "is it locked as collateral yet" flag a portal widget reads at a glance.
+enum EscrowLockStatus {
+  INITIALIZED
+  LOCKED
+  IN_TRANSIT
+  DELIVERED
+  DISBURSED
+}
+
+// Coarse checkpoint category a CustodyEvent belongs to — the four buckets
+// a compliance dashboard reports on, distinct from the eight fine-grained
+// tracker steps custody_events.step_number already carries.
+enum CheckpointType {
+  ORIGIN
+  IN_TRANSIT
+  CUSTOMS
+  REFINERY_INTAKE
+}
+
+enum SealState {
+  applied
+  in_transit
+  verified_intact
+  broken
+  compromised
+}
+
+enum AssayType {
+  field
+  hub_preliminary
+  government_aneemas
+  referee
+}
+
+enum CustodyStatus {
+  pending
+  live
+  done
+}
+
+enum InstrumentType {
+  sblc
+  documentary_lc
+  bank_guaranteed_wire
+}
+
+enum EscrowState {
+  draft
+  onboarded
+  assayed
+  in_transit
+  vaulted
+  settled
+  disputed
+  refunded
+  cancelled
+}
+
+// ───────────────────────── origin ─────────────────────────
+
+model Producer {
+  id             String    @id @default(uuid())
+  aneemasPermit  String    @unique @map("aneemas_permit_no")
+  permitClass    String    @map("permit_class")
+  region         String
+  gpsLat         Decimal?  @map("gps_lat")
+  gpsLng         Decimal?  @map("gps_lng")
+  kycStatus      String    @default("pending") @map("kyc_status")
+  licenseExpiry  DateTime? @map("license_expiry")
+  createdAt      DateTime  @default(now()) @map("created_at")
+
+  // ── onboarding wizard step 1: corporate registration ──
+  legalName      String?   @map("legal_name")
+  rccmNumber     String?   @map("rccm_number") // e.g. 'BF OUA 2024 B 1234'
+  ifuTaxId       String?   @map("ifu_tax_id")
+
+  // ── step 2: regulatory validation ──
+  concessionRef  String?   @map("concession_ref")
+  concessionLat  Decimal?  @map("concession_lat")
+  concessionLng  Decimal?  @map("concession_lng")
+
+  // ── step 3: financial settlement ──
+  bankName          String?  @map("bank_name") // 'Ecobank' | 'Coris Bank' | other
+  bankAccountHolder String?  @map("bank_account_holder") // must match legalName
+  bankAccountNumber String?  @map("bank_account_number") // RIB/IBAN
+
+  // ── step 4: legal & compliance attestation ──
+  oecdAttestationSignedAt DateTime? @map("oecd_attestation_signed_at")
+  oecdAttestationSigId    String?   @map("oecd_attestation_signature_id")
+  onboardingStatus        String    @default("draft") @map("onboarding_status") // draft | submitted | verified | rejected
+
+  lots Lot[]
+
+  @@map("producers")
+}
+
+model Comptoir {
+  id        String @id @default(uuid())
+  name      String
+  licenseNo String @map("license_no")
+  region    String
+
+  lots Lot[]
+
+  @@map("comptoirs")
+}
+
+model Lot {
+  id                String    @id @default(uuid())
+  lotRef            String    @unique @map("lot_ref") // e.g. 'BF-LOT-22014'
+  producerId        String    @map("producer_id")
+  producer          Producer  @relation(fields: [producerId], references: [id])
+  comptoirId        String?   @map("comptoir_id")
+  comptoir          Comptoir? @relation(fields: [comptoirId], references: [id])
+  grossWeightG      Decimal   @map("gross_weight_g") @db.Decimal(10, 3)
+  fieldAssayPct     Decimal?  @map("field_assay_pct") @db.Decimal(6, 3)
+  currentSealCode   String?   @map("current_seal_code")
+  contractNumber    String?   @map("contract_number")
+  status            LotStatus @default(lot_created)
+  escrowLockStatus  EscrowLockStatus @default(INITIALIZED) @map("escrow_lock_status")
+  sourceDeclaredAt  DateTime? @map("source_declared_at") // CAHRA source declaration filed
+  createdAt         DateTime  @default(now()) @map("created_at")
+
+  seals          Seal[]
+  assays         Assay[]
+  custodyEvents  CustodyEvent[]
+  consignmentLots ConsignmentLot[]
+
+  @@index([status])
+  @@map("lots")
+}
+
+model Seal {
+  id           String    @id @default(uuid())
+  sealCode     String    @unique @map("seal_code") // e.g. 'BF-88412-19'
+  lotId        String    @map("lot_id")
+  lot          Lot       @relation(fields: [lotId], references: [id])
+  appliedById  String?   @map("applied_by")
+  appliedAt    DateTime  @map("applied_at")
+  verifiedById String?   @map("verified_by")
+  verifiedAt   DateTime? @map("verified_at")
+  state        SealState @default(applied)
+  photoDocId   String?   @map("photo_doc_id")
+
+  @@map("seals")
+}
+
+model Assay {
+  id                String    @id @default(uuid())
+  lotId             String    @map("lot_id")
+  lot               Lot       @relation(fields: [lotId], references: [id])
+  assayType         AssayType @map("assay_type")
+  purityPct         Decimal   @map("purity_pct") @db.Decimal(6, 3)
+  weightG           Decimal   @map("weight_g") @db.Decimal(10, 3)
+  labName           String    @map("lab_name") // 'ANEEMAS', 'SGS', 'Metalor Referee Lab'…
+  certificateDocId  String?   @map("certificate_doc_id")
+  performedAt       DateTime  @map("performed_at")
+  signatureId       String?   @map("signature_id")
+
+  @@index([lotId, assayType])
+  @@map("assays")
+}
+
+// ───────────────────────── custody ─────────────────────────
+
+model Consignment {
+  id                String   @id @default(uuid())
+  consignmentRef    String   @unique @map("consignment_ref") // e.g. 'AGL-2609-02'
+  origin            String
+  destination       String
+  carrierId         String?  @map("carrier_id")
+  carrier           Carrier? @relation(fields: [carrierId], references: [id])
+  awbNumber         String?  @map("awb_number")
+  insuredValueUsd   Decimal? @map("insured_value_usd") @db.Decimal(14, 2)
+  grossWeightG      Decimal? @map("gross_weight_g") @db.Decimal(10, 3)
+  declaredFinePct   Decimal? @map("declared_fineness_pct") @db.Decimal(6, 3)
+  currentStage      Int      @default(1) @map("current_stage") // 1-8, or 9 once fully settled
+  status            String   @default("active")
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  custodyEvents   CustodyEvent[]
+  consignmentLots ConsignmentLot[]
+  tradeContract   TradeContract?
+
+  @@map("consignments")
+}
+
+model ConsignmentLot {
+  consignmentId String      @map("consignment_id")
+  consignment   Consignment @relation(fields: [consignmentId], references: [id])
+  lotId         String      @map("lot_id")
+  lot           Lot         @relation(fields: [lotId], references: [id])
+  weightG       Decimal     @map("weight_g") @db.Decimal(10, 3)
+
+  @@id([consignmentId, lotId])
+  @@map("consignment_lots")
+}
+
+// The eight-stage vocabulary the Client Portal's Live Shipment Tracker renders.
+model CustodyEvent {
+  id             String        @id @default(uuid())
+  lotId          String?       @map("lot_id")
+  lot            Lot?          @relation(fields: [lotId], references: [id])
+  consignmentId  String        @map("consignment_id")
+  consignment    Consignment   @relation(fields: [consignmentId], references: [id])
+  stepNumber     Int           @map("step_number") // 1..8
+  stepName       String        @map("step_name")
+  checkpointType CheckpointType? @map("checkpoint_type") // coarse ORIGIN/IN_TRANSIT/CUSTOMS/REFINERY_INTAKE bucket
+  status         CustodyStatus @default(pending)
+  location       String?
+  actorId        String?       @map("actor_id") // human agent, when signed off by a person
+  signedByApiKeyId String?     @map("signed_by_api_key_id") // carrier/system API key, when signed off by an integration
+  evidenceDocId  String?       @map("evidence_doc_id") // required before status -> done
+  startedAt      DateTime?     @map("started_at")
+  completedAt    DateTime?     @map("completed_at")
+
+  @@unique([consignmentId, stepNumber])
+  @@map("custody_events")
+}
+
+/// Authorized carrier/agent credentials that may sign off a CustodyEvent.
+model ApiKey {
+  id          String    @id @default(uuid())
+  label       String    // e.g. 'Brink's OUA dispatch system'
+  carrierId   String?   @map("carrier_id")
+  carrier     Carrier?  @relation(fields: [carrierId], references: [id])
+  hashedSecret String   @map("hashed_secret") // sha-256 of the bearer secret, never the raw value
+  createdAt   DateTime  @default(now()) @map("created_at")
+  revokedAt   DateTime? @map("revoked_at")
+
+  @@map("api_keys")
+}
+
+model Carrier {
+  id              String @id @default(uuid())
+  name            String @unique // 'Brinks' | 'Malca-Amit'
+  webhookSecretRef String @map("webhook_secret_ref")
+  apiVersion      String @default("v1") @map("api_version")
+
+  consignments  Consignment[]
+  carrierEvents CarrierEvent[]
+  apiKeys       ApiKey[]
+
+  @@map("carriers")
+}
+
+model CarrierEvent {
+  id               String   @id @default(uuid())
+  carrierId        String   @map("carrier_id")
+  carrier          Carrier  @relation(fields: [carrierId], references: [id])
+  externalEventId  String   @unique @map("external_event_id")
+  consignmentId    String?  @map("consignment_id")
+  eventType        String   @map("event_type")
+  rawPayload       Json     @map("raw_payload")
+  receivedAt       DateTime @default(now()) @map("received_at")
+  processedAt      DateTime? @map("processed_at")
+
+  @@map("carrier_events")
+}
+
+model Document {
+  id           String   @id @default(uuid())
+  docType      String   @map("doc_type")
+  lotId        String?  @map("lot_id")
+  consignmentId String? @map("consignment_id")
+  fileHash     String   @map("file_hash") // sha-256
+  storageUrl   String   @map("storage_url")
+  uploadedById String?  @map("uploaded_by")
+  uploadedAt   DateTime @default(now()) @map("uploaded_at")
+
+  @@map("documents")
+}
+
+// ───────────────────────── trade & escrow ─────────────────────────
+
+model Counterparty {
+  id              String   @id @default(uuid())
+  type            String   // 'buyer' | 'supplier'
+  legalName       String   @map("legal_name")
+  country         String
+  lbmaMemberNo    String?  @map("lbma_member_no")
+  kycStatus       String   @default("pending") @map("kyc_status")
+  sanctionsStatus String   @default("clear") @map("sanctions_status")
+  uboJson         Json?    @map("ubo_json")
+
+  buyerContracts  TradeContract[] @relation("buyer")
+  sellerContracts TradeContract[] @relation("seller")
+
+  @@map("counterparties")
+}
+
+model TradeContract {
+  id              String         @id @default(uuid())
+  consignmentId   String         @unique @map("consignment_id")
+  consignment     Consignment    @relation(fields: [consignmentId], references: [id])
+  buyerId         String         @map("buyer_id")
+  buyer           Counterparty   @relation("buyer", fields: [buyerId], references: [id])
+  sellerId        String         @map("seller_id")
+  seller          Counterparty   @relation("seller", fields: [sellerId], references: [id])
+  instrumentType  InstrumentType @map("instrument_type")
+  instrumentRef   String?        @map("instrument_ref") // SWIFT MT760 reference, once issued
+  issuingBank     String?        @map("issuing_bank")
+  confirmingBank  String?        @map("confirming_bank")
+  priceBasis      String         @default("LBMA_PM_FIX") @map("price_basis")
+  discountPct     Decimal        @map("discount_pct") @db.Decimal(5, 2)
+  state           EscrowState    @default(draft)
+  createdAt       DateTime       @default(now()) @map("created_at")
+
+  escrowAccount EscrowAccount?
+
+  @@map("trade_contracts")
+}
+
+model EscrowAccount {
+  id               String        @id @default(uuid())
+  tradeContractId  String        @unique @map("trade_contract_id")
+  tradeContract    TradeContract @relation(fields: [tradeContractId], references: [id])
+  bankName         String        @map("bank_name")
+  accountRef       String        @map("account_ref") // IBAN / correspondent ref, held off-platform
+  currency         String        @default("USD") @db.Char(3)
+  status           String        @default("opened")
+
+  transactions EscrowTransaction[]
+
+  @@map("escrow_accounts")
+}
+
+model EscrowTransaction {
+  id                  String        @id @default(uuid())
+  escrowAccountId     String        @map("escrow_account_id")
+  escrowAccount       EscrowAccount @relation(fields: [escrowAccountId], references: [id])
+  type                String        // 'fund' | 'release' | 'refund'
+  amountUsd           Decimal       @map("amount_usd") @db.Decimal(14, 2)
+  triggeredByEventId  String?       @map("triggered_by_event_id") // custody_events.id or assays.id
+  quorumRequired      Int           @default(2) @map("quorum_required")
+  quorumMet           Int           @default(0) @map("quorum_met")
+  state               EscrowState
+  createdAt           DateTime      @default(now()) @map("created_at")
+  releasedAt          DateTime?     @map("released_at")
+
+  @@map("escrow_transactions")
+}
+
+// ───────────────────────── identity & audit ─────────────────────────
+
+model User {
+  id        String  @id @default(uuid())
+  name      String
+  role      String  // 'producer' | 'comptoir_agent' | 'aneemas_officer' | 'carrier_ops' | 'buyer_ops' | 'gc_admin'
+  orgId     String? @map("org_id")
+  publicKey String? @map("public_key")
+
+  signatures Signature[]
+
+  @@map("users")
+}
+
+model Signature {
+  id            String   @id @default(uuid())
+  subjectType   String   @map("subject_type") // 'document' | 'escrow_transaction' | 'custody_event'
+  subjectId     String   @map("subject_id")
+  userId        String   @map("user_id")
+  user          User     @relation(fields: [userId], references: [id])
+  signerRole    String   @map("signer_role") // 'gc_ops' | 'bank_compliance' | 'buyer_authorized'
+  algorithm     String   @default("ed25519")
+  signatureHash String   @map("signature_hash") // detached signature over subject's canonical payload hash
+  signedAt      DateTime @default(now()) @map("signed_at")
+  ipAddress     String?  @map("ip_address")
+
+  @@index([subjectType, subjectId])
+  @@map("signatures")
+}
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  entityType String   @map("entity_type")
+  entityId   String   @map("entity_id")
+  action     String
+  actorId    String?  @map("actor_id")
+  beforeJson Json?    @map("before_json")
+  afterJson  Json?    @map("after_json")
+  at         DateTime @default(now())
+
+  @@map("audit_log")
+}
